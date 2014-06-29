@@ -1,0 +1,96 @@
+navigator navbar {
+  hidereport @none
+}
+
+macro all_navbar [
+  header -8<-
+  == [[File:icons/nantic_logo.png|bottom]] Project Plan ==
+  <[navigator id="navbar"]>
+  ->8-
+  ]
+
+macro TaskTip [
+  tooltip istask() -8<-
+    '''Start: ''' <-query attribute='start'->
+    '''End: ''' <-query attribute='end'->
+    ----
+    '''Resources:'''
+
+    <-query attribute='resources'->
+    ----
+    '''Precursors: '''
+
+    <-query attribute='precursors'->
+    ----
+    '''Followers: '''
+
+    <-query attribute='followers'->
+    ->8-
+]
+
+
+taskreport "Index" {
+  formats html
+  ${all_navbar}
+
+  taskreport "Overview" {
+    title "Project Overview"
+    headline "Project Overview"
+    loadunit days
+    columns name, start, end, effort, chart { scale day width 1850 }
+    timeformat "%a %m/%d"
+
+    {% for line in lines %}
+    {%- if line.taskjuggler_tasks -%}
+    taskreport "{{line.code }}" {
+      title "{{line.timesheet_work_name }}"
+      headline "{{line.timesheet_work_name }}"
+      loadunit days
+      taskroot task{{line.code}}
+      }
+    {% endif %}
+    {% endfor %}
+
+   }
+   # A list of tasks showing the resources assigned to each task.
+   taskreport development2 "dev" {
+    scenarios plan
+    headline "Development - Resource Allocation Report"
+    columns bsi { title 'WBS' }, name, start, end, effort { title "Work" },
+            duration, chart { ${TaskTip} scale day width 500 }
+    timeformat "%Y-%m-%d"
+    hideresource ~(isleaf() & isleaf_())
+    sortresources name.up
+  }
+
+   # A list of tasks showing the resources assigned to each task.
+  taskreport development "Allocation" {
+    scenarios plan
+    title "Resource Allocation Report"
+    headline "Development - Resource Allocation Report"
+    columns name {width 250}, start, end, effort { title "Work" }, duration, chart { ${TaskTip} width 1250 }
+    timeformat "%m-%d"
+    hideresource ~(isleaf() & isleaf_())
+    sortresources name.up
+    loadunit days
+  }
+
+  # A graph showing resource allocation. It identifies whether each
+  # resource is under- or over-allocated for.
+  resourcereport resourceGraph "AllocationGraph" {
+    scenarios plan
+    title "Resource Allocation Graph"
+    headline "Resource Allocation Graph"
+    columns no, name, effort, daily, chart { ${TaskTip} }
+    loadunit days
+    # We only like to show leaf tasks for leaf resources.
+#    hidetask ~(isleaf() & isleaf_())
+   hideresource ~(isleaf() & isleaf_())
+    sortresources name.up
+
+    sorttasks plan.start.up
+  }
+
+
+}
+

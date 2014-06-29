@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<tryton>
+    <data>
+
+        <record model="ir.ui.view" id="taskjuggler_project_view_form">
+            <field name="model">taskjuggler.project</field>
+            <field name="type">form</field>
+            <field name="name">taskjuggler_project_form</field>
+        </record>
+        <record model="ir.ui.view" id="taskjuggler_project_view_list">
+            <field name="model">taskjuggler.project</field>
+            <field name="type">tree</field>
+            <field name="name">taskjuggler_project_list</field>
+        </record>
+        <record model="ir.action.act_window" id="act_taskjuggler_project">
+            <field name="name">TaskJuggler</field>
+            <field name="res_model">taskjuggler.project</field>
+        </record>
+        <record model="ir.action.act_window.view" id="act_taskjuggler_project_view1">
+            <field name="sequence" eval="10"/>
+            <field name="view" ref="taskjuggler_project_view_list"/>
+            <field name="act_window" ref="act_taskjuggler_project"/>
+        </record>
+        <record model="ir.action.act_window.view" id="act_taskjuggler_project_view2">
+            <field name="sequence" eval="20"/>
+            <field name="view" ref="taskjuggler_project_view_form"/>
+            <field name="act_window" ref="act_taskjuggler_project"/>
+        </record>
+        <record model="ir.model.access" id="access_taskjuggler_project">
+            <field name="model" search="[('model', '=', 'taskjuggler.project')]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_delete" eval="False"/>
+        </record>
+        <record model="ir.model.access" id="access_taskjuggler_project_admin">
+            <field name="model" search="[('model', '=', 'taskjuggler.project')]"/>
+            <field name="group" ref="project.group_project_admin"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_delete" eval="True"/>
+        </record>
+
+        <record model="ir.ui.view" id="company_employee_view_form">
+            <field name="model">company.employee</field>
+            <field name="type">form</field>
+            <field name="inherit" ref="company.employee_view_form"/>
+            <field name="name">company_employee_form</field>
+        </record>
+
+
+        <!-- Menus -->
+        <menuitem action="act_taskjuggler_project" id="menu_taskjuggler_project" parent="project.menu_project" sequence="1" name="TaskJuggler"/>
+    </data>
+</tryton>

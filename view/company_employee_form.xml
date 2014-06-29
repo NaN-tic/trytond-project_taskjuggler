@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<!-- The COPYRIGHT file at the top level of this repository contains the full
+     copyright notices and license terms. -->
+<data>
+<!-- TODO fill "xpath expr" -->
+    <xpath expr="/form/field[@name='party']" position="after">
+        <label name="trackers"/>
+        <field name="trackers"/>
+    </xpath>
+</data>

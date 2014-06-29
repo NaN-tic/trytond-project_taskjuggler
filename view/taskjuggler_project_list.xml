@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<!-- The COPYRIGHT file at the top level of this repository contains the full
+     copyright notices and license terms. -->
+<tree string="TaskJuggler">
+    <field name="name"/>
+    <field name="start_date"/>
+    <field name="output"/>
+    <field name="output"/>
+    <field name="url"/>
+</tree>

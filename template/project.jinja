@@ -1,0 +1,20 @@
+project id{{ project.id }} "{{ project.name }}"  {{ project.start_date.strftime('%Y-%m-%d') }}  + {{ project.duration }} {
+
+    timingresolution 15 min
+    timezone "Europe/Madrid"
+    timeformat "%Y/%m/%d"
+
+
+    # We want to compare the baseline scenario to one with a slightly
+    # delayed start.
+    scenario plan "Plan" {
+        scenario delayed "Delayed"
+    }
+
+   scenario plan "Plan" {
+        scenario real "Real"
+    }
+}
+
+projectids {{ project.project_ids }}
+

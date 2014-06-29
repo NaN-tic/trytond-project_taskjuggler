@@ -1,0 +1,15 @@
+{%- for line in lines -%}
+    {%- if line.taskjuggler_tasks -%}
+    task task{{line.code}} "{{line.timesheet_work_name }}" {
+        {%- for tracker in line.taskjuggler_trackers -%}
+            task task{{line.code}}t{{tracker.id}} "{{ tracker.name }}" {
+                {%- for task in line.taskjuggler_tasks -%}
+                    {%- if tracker.id == task.tracker.id -%}
+                        {%- include "task.jinja" -%}
+                    {%- endif -%}
+                {%- endfor -%}
+            }
+        {%- endfor -%}
+    }
+    {%- endif -%}
+{%- endfor -%}
