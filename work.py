@@ -27,13 +27,6 @@ def command(cmd):
     return output, err
 
 
-# class ProjectTracker:
-#     __name__ = 'project.work.tracker'
-
-#     employees = fields.Many2Many('project.tracker-company.employee',
-#         'employee', 'tracker', 'Trackers')
-
-
 class EmployeeTrackers(ModelSQL):
     'Employee - Trackers'
     __name__ = 'project.tracker-company.employee'
@@ -125,7 +118,9 @@ class TaskJuggler(ModelSQL, ModelView):
     project_ids = fields.Function(fields.Char("Ids"), 'get_project_ids')
     projects = fields.Many2Many('taskjuggler.project-project.work',
          'taskjuggler', 'project', 'Projects',
-         domain=[('type', '=', 'project')], depends=['type'])
+         domain=[('type', '=', 'project'),
+                ('parent', '=', None),
+                ('state', '=', 'opened')], depends=['type'])
 
     @classmethod
     def __setup__(cls):
