@@ -80,11 +80,26 @@ class Work:
             trackers.add(task.tracker.id)
         return list(trackers)
 
+    def get_dependencies(self):
+        if not self.predecessors:
+            return []
+
+        dependencies = []
+        for task in self.predecessors:
+            dependencies.append(task)
+            dependencies += task.get_dependencies()
+        return dependencies
+
     def get_tasks(self, name=None):
         tasks = self.search([
             ('parent', '=', self.id),
             ('state', '=', 'opened')])
-        return [task.id for task in tasks]
+
+        dependencies = []
+        for task in tasks:
+            dependencies += task.get_dependencies()
+
+        return list(set([task.id for task in tasks+dependencies]))
 
 
 class TaskJugglerProjectWork(ModelSQL):
@@ -164,9 +179,7 @@ class TaskJuggler(ModelSQL, ModelView):
 
             cmd = ['tj3', '--output-dir', project.output,  tjpf.name]
             r, a = command(cmd)
-            print "r",r
-            print "a", a
-            cls.raise_user_error('taskjuggler_result', (r,a))
+            cls.raise_user_error('taskjuggler_result', (r, a))
 
 
 

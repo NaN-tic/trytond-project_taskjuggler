@@ -1,14 +1,15 @@
 task task{{ task.code }}  "{{ task.code }}-{{ task.timesheet_work_name.replace('"','')[:40] }}"{
     projectid p{{ task.parent.id }}
     effort {{ task.effort or 4.0 }}h
-    {%- if task.resources -%}
+
+    {% if task.resources %}
         {{ '\n'}}
         allocate rid{{task.resources[0].id}} {alternative {% for res in task.resources[1:-1] %} rid{{res.id}}, {%endfor%} rid{{task.resources[-1].id}} persistent}
-    {%- endif -%}
+    {% endif %}
 
-
-    {%- if task.predecessors -%}
+    {% if task.predecessors %}
+        {{ '\n'}}
         depends {{ task.predecessors|join(',','taskjuggler_code') }}
-    {%- endif -%}
+    {% endif %}
 
 }
