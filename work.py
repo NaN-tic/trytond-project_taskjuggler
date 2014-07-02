@@ -57,6 +57,18 @@ class Work:
         'get_tasks')
     taskjuggler_code = fields.Function(fields.Char('TaskJuggler Code'),
         'get_taskjuggler_code')
+    taskjuggler_hours = fields.Function(fields.Float('Remain Hours'),
+        'calc_remain_hours')
+
+    def calc_remain_hours(self, name=None):
+        effort = self.effort or 4.0
+        hours = self.hours or 0.0
+        res = effort - hours
+        if effort - hours <= 0 and self.state == 'opened':
+            res = 4.0 + (hours - effort)
+        if self.state == 'done':
+            res = 0
+        return res
 
     def get_taskjuggler_code(self, name=None):
         return "task%s.task%st%s.task%s" % (self.parent.code,

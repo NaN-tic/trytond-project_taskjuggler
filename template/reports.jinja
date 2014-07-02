@@ -37,23 +37,28 @@ taskreport "Index" {
     title "Project Overview"
     headline "Project Overview"
     loadunit days
-    columns name, start, end, effort, chart { scale day width 1850 }
+    columns name, start, end, effort, chart { scale week width 1600 }
     timeformat "%a %m/%d"
+    hidetask isleaf()
+  }
 
+  taskreport "Projects" {
     {% for line in lines %}
     {%- if line.taskjuggler_tasks -%}
     taskreport "{{line.code }}" {
       title "{{line.timesheet_work_name }}"
       headline "{{line.timesheet_work_name }}"
       loadunit days
+      columns name, start, end, effort, chart { scale week width 1600 }
       taskroot task{{line.code}}
       }
     {% endif %}
     {% endfor %}
 
    }
+
    # A list of tasks showing the resources assigned to each task.
-   taskreport development2 "dev" {
+   taskreport development2 "Task Allocation" {
     scenarios plan
     headline "Development - Resource Allocation Report"
     columns bsi { title 'WBS' }, name, start, end, effort { title "Work" },
@@ -63,34 +68,16 @@ taskreport "Index" {
     sortresources name.up
   }
 
-   # A list of tasks showing the resources assigned to each task.
-  taskreport development "Allocation" {
-    scenarios plan
-    title "Resource Allocation Report"
-    headline "Development - Resource Allocation Report"
-    columns name {width 250}, start, end, effort { title "Work" }, duration, chart { ${TaskTip} width 1250 }
-    timeformat "%m-%d"
-    hideresource ~(isleaf() & isleaf_())
+
+
+  # A list of all employees with their contact details.
+  resourcereport resourceGraph "Resource Allocation" {
+    headline "Contact list and duty plan"
+    columns name, chart { scale week }
+    hideresource ~isleaf()
     sortresources name.up
-    loadunit days
+    hidetask 1
   }
-
-  # A graph showing resource allocation. It identifies whether each
-  # resource is under- or over-allocated for.
-  resourcereport resourceGraph "AllocationGraph" {
-    scenarios plan
-    title "Resource Allocation Graph"
-    headline "Resource Allocation Graph"
-    columns no, name, effort, daily, chart { ${TaskTip} }
-    loadunit days
-    # We only like to show leaf tasks for leaf resources.
-#    hidetask ~(isleaf() & isleaf_())
-   hideresource ~(isleaf() & isleaf_())
-    sortresources name.up
-
-    sorttasks plan.start.up
-  }
-
 
 }
 
