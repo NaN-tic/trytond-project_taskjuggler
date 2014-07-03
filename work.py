@@ -48,6 +48,9 @@ class Employee:
 class Work:
     __name__ = 'project.work'
 
+    planned_work = fields.Boolean('Planned', help='If the work is marked as '
+        'Planned it means that this is probably not going to be the real task '
+        'but we sill created it to have better long-term planning.')
     resources = fields.Function(fields.Many2Many('company.employee', None,
         None, 'Resources'), 'get_resources')
     taskjuggler_trackers = fields.Function(fields.Many2Many(
@@ -97,8 +100,9 @@ class Work:
 
     def get_tasks(self, name=None):
         tasks = self.search([
-            ('parent', '=', self.id),
-            ('state', '=', 'opened')])
+                ('parent', '=', self.id),
+                ('state', '=', 'opened'),
+                ])
 
         dependencies = []
         for task in tasks:
@@ -129,10 +133,14 @@ class TaskJuggler(ModelSQL, ModelView):
     output = fields.Char('Output Directory')
     project_ids = fields.Function(fields.Char("Ids"), 'get_project_ids')
     projects = fields.Many2Many('taskjuggler.project-project.work',
-         'taskjuggler', 'project', 'Projects',
-         domain=[('type', '=', 'project'),
-                ('parent', '=', None),
-                ('state', '=', 'opened')], depends=['type'])
+        'taskjuggler', 'project', 'Projects',
+        domain=[
+            ('type', '=', 'project'),
+            ('parent', '=', None),
+            ('state', '=', 'opened'),
+            ], depends=['type'])
+    planned_works = fields.Boolean('Include Planned Works', help='If not '
+        'checked, works marked as Planned will not be included.')
 
     @classmethod
     def __setup__(cls):
@@ -144,6 +152,10 @@ class TaskJuggler(ModelSQL, ModelView):
                 'taskjuggler_result': ('TaskJuggler Compilation Result %s:\n '
                     '%s'),
                 })
+
+    @staticmethod
+    def default_planned_works():
+        return True
 
     def get_project_ids(self, name=None):
         ids = []
@@ -171,7 +183,8 @@ class TaskJuggler(ModelSQL, ModelView):
             employee_tjp = employee_template.render(employees=employees)
 
             line_template = template_env.get_template('project_line.jinja')
-            line_tjp = line_template.render(lines=project.projects)
+            line_tjp = line_template.render(lines=project.projects,
+                planned_works=project.planned_works)
 
             report_template = template_env.get_template('reports.jinja')
             report_tjp = report_template.render(lines=project.projects)
@@ -187,23 +200,3 @@ class TaskJuggler(ModelSQL, ModelView):
             cmd = ['tj3', '--output-dir', project.output,  tjpf.name]
             r, a = command(cmd)
             cls.raise_user_error('taskjuggler_result', (r, a))
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -12,6 +12,8 @@
     <field name="output"/>
     <label name="url"/>
     <field name="url"/>
+    <label name="planned_works"/>
+    <field name="planned_works"/>
     <field name="projects" colspan="4"/>
     <button name="export" string="Export"/>
 </form>
