@@ -141,6 +141,10 @@ class TaskJuggler(ModelSQL, ModelView):
             ], depends=['type'])
     planned_works = fields.Boolean('Include Planned Works', help='If not '
         'checked, works marked as Planned will not be included.')
+    estimated_effort = fields.Float('Estimated Effort', states={
+            'invisible': Eval('type') != 'project',
+            }, help='Estimated effort should include the time spent in all the '
+        'children of the work. Used for planning of Planned Works only.' )
 
     @classmethod
     def __setup__(cls):
