@@ -1,14 +1,14 @@
 # This file is part of project_taskjuggler module for Tryton.
 # The COPYRIGHT file at the top level of this repository contains the full
 # copyright notices and license terms.
-from trytond.model import fields, ModelSQL, ModelView
-from trytond.pool import PoolMeta, Pool
-from trytond.pyson import Eval
 import os
 import logging
 from tempfile import NamedTemporaryFile
 import codecs
 import subprocess
+from trytond.model import fields, ModelSQL, ModelView
+from trytond.pool import PoolMeta, Pool
+from trytond.pyson import Eval
 
 try:
     from jinja2 import Environment, FileSystemLoader
