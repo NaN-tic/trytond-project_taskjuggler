@@ -3,6 +3,7 @@
 # copyright notices and license terms.
 from trytond.model import fields, ModelSQL, ModelView
 from trytond.pool import PoolMeta, Pool
+from trytond.pyson import Eval
 import os
 import logging
 from tempfile import NamedTemporaryFile
