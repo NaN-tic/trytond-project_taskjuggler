@@ -109,7 +109,7 @@ class Work:
         for task in tasks:
             dependencies += task.get_dependencies()
 
-        return list(set([task.id for task in tasks+dependencies]))
+        return list(set([task.id for task in tasks + dependencies]))
 
 
 class TaskJugglerProjectWork(ModelSQL):
@@ -139,13 +139,13 @@ class TaskJuggler(ModelSQL, ModelView):
             ('type', '=', 'project'),
             ('parent', '=', None),
             ('state', '=', 'opened'),
-            ], depends=['type'])
+            ])
     planned_works = fields.Boolean('Include Planned Works', help='If not '
         'checked, works marked as Planned will not be included.')
     estimated_effort = fields.Float('Estimated Effort', states={
             'invisible': Eval('type') != 'project',
-            }, help='Estimated effort should include the time spent in all the '
-        'children of the work. Used for planning of Planned Works only.' )
+            }, help='Estimated effort should include the time spent in all '
+        'the children of the work. Used for planning of Planned Works only.')
 
     @classmethod
     def __setup__(cls):
