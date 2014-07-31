@@ -44,6 +44,13 @@ class Employee:
 
     trackers = fields.Many2Many('project.tracker-company.employee', 'employee',
         'tracker', 'Trackers')
+    holidays = fields.Function(fields.One2Many('holidays_employee.event',
+        None, 'holidays'), 'get_holidays')
+
+    def get_holidays(self, name):
+        Holidays = Pool().get('holidays_employee.event')
+        holidays = Holidays.search([('calendar.employee', '=', self)])
+        return [x.id for x in holidays]
 
 
 class Work:

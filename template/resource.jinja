@@ -1,4 +1,7 @@
 {%- for employee in employees -%}
-resource rid{{ employee.id }} "{{ employee.party.name }}"
-
-{%- endfor -%}
+resource rid{{ employee.id }} "{{ employee.party.name }}" {
+    {%- for holiday in employee.holidays -%}
+    leaves holiday {{holiday.start_date}} - {{holiday.end_date}}
+    {% endfor %}
+}
+{% endfor %}
