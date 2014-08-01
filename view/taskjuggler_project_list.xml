@@ -7,4 +7,5 @@
     <field name="output"/>
     <field name="output"/>
     <field name="url"/>
+    <field name="exported_date"/>
 </tree>

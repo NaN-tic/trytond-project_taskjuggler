@@ -9,6 +9,7 @@ import subprocess
 from trytond.model import fields, ModelSQL, ModelView
 from trytond.pool import PoolMeta, Pool
 from trytond.pyson import Eval
+from datetime import datetime
 
 try:
     from jinja2 import Environment, FileSystemLoader
@@ -48,9 +49,13 @@ class Employee:
         None, 'holidays'), 'get_holidays')
 
     def get_holidays(self, name):
-        Holidays = Pool().get('holidays_employee.event')
-        holidays = Holidays.search([('calendar.employee', '=', self)])
-        return [x.id for x in holidays]
+        Calendar = Pool().get('holidays_employee.calendar')
+        calendars = Calendar.search([('employee', '=', self)])
+        holidays = []
+        for calendar in calendars:
+            holidays += [x.id for x in calendar.events]
+
+        return holidays
 
 
 class Work:
@@ -153,6 +158,8 @@ class TaskJuggler(ModelSQL, ModelView):
             'invisible': Eval('type') != 'project',
             }, help='Estimated effort should include the time spent in all '
         'the children of the work. Used for planning of Planned Works only.')
+    exported_date = fields.DateTime('Exported', required=True, readonly=True)
+    exported_msg = fields.Text('Exported Message', readonly=True)
 
     @classmethod
     def __setup__(cls):
@@ -209,6 +216,9 @@ class TaskJuggler(ModelSQL, ModelView):
             tjpfc.write(report_tjp)
             tjpfc.close()
 
-            cmd = ['tj3', '--output-dir', project.output,  tjpf.name]
-            r, a = command(cmd)
-            cls.raise_user_error('taskjuggler_result', (r, a))
+            cmd = ['tj3', '--output-dir', project.output,
+                tjpf.name]
+            result, error = command(cmd)
+            project.exported_date = datetime.now()
+            project.expored_msg = result
+            project.save()
