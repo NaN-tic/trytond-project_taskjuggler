@@ -15,13 +15,13 @@
     <label name="planned_works"/>
     <field name="planned_works"/>
     <notebook colspan="4">
-        <page name="projects" id="projects">
+        <page name="projects">
             <field name="projects" colspan="4"/>
             <button name="export" string="Export"/>
             <label name="exported_date"/>
             <field name="exported_date"/>
         </page>
-        <page name="exported_msg" id="exported_msg">
+        <page name="exported_msg">
             <field name="exported_msg" colspan="4"/>
         </page>
     </notebook>
